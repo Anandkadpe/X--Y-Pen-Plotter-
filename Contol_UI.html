@@ -1,0 +1,148 @@
+const char* html = R"rawliteral(
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Pen Plotter Control</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.hs-schmalkalden.de/fileadmin/_processed_/1/1/csm_P3150356_7df3c7b570.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8); /* White background with transparency */
+            border-radius: 10px; /* Rounded corners for the container */
+            position: relative; /* To position the logo */
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center the buttons */
+        }
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 120px;
+            height: 100px;
+            flex-direction: column;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        button i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        button span {
+            font-size: 16px;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 250px; /* Increased size */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .emergency-button {
+            background-color: red; /* Red background for emergency button */
+            flex-basis: 100%; /* Full width for emergency button */
+            margin-top: 20px; /* Margin to separate from other buttons */
+        }
+        .emergency-button:hover {
+            background-color: darkred; /* Darker shade on hover */
+        }
+    </style>
+    <!-- Add FontAwesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <img class="logo" src="https://www.hs-schmalkalden.de/typo3conf/ext/hsm_sitepackage/Resources/Public/Images/logo.jpg" alt="Hochschule Schmalkalden Logo">
+    <div class="container">
+        <h1>2D Pen Plotter Control</h1>
+        <h2>Team 20</h2>
+        <div class="button-container">
+            <button onclick="sendCommand('START')">
+                <i class="fas fa-play-circle"></i>
+                <span>START DRAWING</span>
+            </button>
+            <button onclick="sendCommand('STOP')">
+                <i class="fas fa-stop-circle"></i>
+                <span>STOP DRAWING</span>
+            </button>
+            <button onclick="sendCommand('PENDOWN')">
+                <i class="fas fa-pencil-alt"></i>
+                <span>PEN DOWN</span>
+            </button>
+            <button onclick="sendCommand('PENUP')">
+                <i class="fas fa-pen-nib"></i>
+                <span>PEN UP</span>
+            </button>
+            <button onclick="sendCommand('RESET')">
+                <i class="fas fa-redo"></i>
+                <span>RESET</span>
+            </button>
+            <button onclick="sendCommand('HOMING')">
+                <i class="fas fa-home"></i>
+                <span>HOMING</span>
+            </button>
+            <button class="emergency-button" onclick="sendCommand('EMERGENCY_STOP')">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>EMERGENCY STOP!!!!</span>
+            </button>
+        </div>
+        <div class="status" id="status">Status: Waiting for command...</div>
+    </div>
+
+    <script>
+        function sendCommand(command) {
+            fetch(`/command?cmd=${command}`)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('status').innerText = `Status: ${command} executed`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('status').innerText = `Error: ${error.message}`;
+                });
+        }
+    </script>
+</body>
+</html>
+)rawliteral";
